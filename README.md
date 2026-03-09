@@ -34,12 +34,12 @@ npm run dev
 ```
 agrosafra/
 ├── backend/
-│   ├── main.py          ← API FastAPI completa
+│   ├── main.py          
 │   └── requirements.txt
 └── frontend/
     └── src/
         ├── services/
-        │   └── api.js       ← chamadas HTTP para o backend
+        │   └── api.js       
         └── pages/
-            └── Dashboard.jsx ← página principal
+            └── Dashboard.jsx 
 ```
