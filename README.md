@@ -112,16 +112,3 @@ agrosafra/
 | HTTP Client | Fetch nativo | Sem dependência extra |
 | Deploy backend | Railway / Render | Grátis para projetos pequenos |
 | Deploy frontend | Vercel / Netlify | Grátis, CI/CD automático |
-
----
-
-## 📚 Recursos para estudar
-
-- [FastAPI Docs](https://fastapi.tiangolo.com/) — documentação oficial excelente
-- [React Docs](https://react.dev/) — tutorial oficial
-- [Recharts](https://recharts.org/) — gráficos para React
-- [Railway](https://railway.app/) — deploy fácil do backend Python
-
----
-
-*Projeto criado para prática de freelancer em agronegócio + TI.*
