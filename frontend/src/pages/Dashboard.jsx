@@ -102,7 +102,7 @@ export default function Dashboard() {
 
       <header className="dash-header">
         <div>
-          <h1>🌾 AgroSafra</h1>
+          <h1>🌾 Safra Terra</h1>
           <p>Gestão de safras e talhões</p>
         </div>
         <div className="header-actions">
