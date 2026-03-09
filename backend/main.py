@@ -15,7 +15,11 @@ app = FastAPI(title="AgroSafra API", version="1.0.0")
 # CORS — permite o React se comunicar com a API
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
+    allow_origins=[
+        "http://localhost:5173",
+        "https://safraterra.vercel.app",
+        "https://safraterra-kgeuh88a2-jpalmdas-projects.vercel.app",
+    ],
     allow_methods=["*"],
     allow_headers=["*"],
 )
