@@ -43,7 +43,3 @@ agrosafra/
         └── pages/
             └── Dashboard.jsx ← página principal
 ```
-| Frontend | React + Vite | Mercado, componentes reutilizáveis |
-| HTTP Client | Fetch nativo | Sem dependência extra |
-| Deploy backend | Railway / Render | Grátis para projetos pequenos |
-| Deploy frontend | Vercel / Netlify | Grátis, CI/CD automático |
