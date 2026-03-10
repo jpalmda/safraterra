@@ -1,36 +1,27 @@
-// ============================================================
-//  Dashboard.jsx — com formulários de talhão, safra e insumos
-// ============================================================
-
 import { useEffect, useState } from "react";
 import {
   getDashboard, getTalhoes, getSafras,
   criarTalhao, criarSafra, getInsumos, criarInsumo
 } from "../services/api";
+import Clima from "../components/Clima";
 
-export default function Dashboard() {
-  const [dash, setDash]         = useState(null);
-  const [talhoes, setTalhoes]   = useState([]);
-  const [safras, setSafras]     = useState([]);
-  const [loading, setLoading]   = useState(true);
-  const [modal, setModal]       = useState(null);
-  const [salvando, setSalvando] = useState(false);
-  const [erro, setErro]         = useState("");
-
-  // Painel de insumos
+export default function Dashboard({ nomeUsuario, onLogout }) {
+  const [dash, setDash]       = useState(null);
+  const [talhoes, setTalhoes] = useState([]);
+  const [safras, setSafras]   = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [modal, setModal]     = useState(null);
   const [safraAtiva, setSafraAtiva]         = useState(null);
   const [insumos, setInsumos]               = useState([]);
-  const [loadInsumos, setLoadInsumos]       = useState(false);
-  const [salvandoInsumo, setSalvandoInsumo] = useState(false);
-  const [formInsumo, setFormInsumo]         = useState({
-    descricao: "", quantidade: "", unidade: "kg", custo_total: "", data_aplicacao: ""
-  });
+  const [loadingInsumos, setLoadingInsumos] = useState(false);
+  const [abaAtiva, setAbaAtiva]             = useState("dashboard"); // 'dashboard' | 'clima'
 
-  const [formTalhao, setFormTalhao] = useState({ nome: "", area_ha: "", solo: "" });
-  const [formSafra, setFormSafra]   = useState({
-    talhao_id: "", cultura: "", ciclo: "Safra (verão)",
-    produtividade_sc_ha: "", preco_saca: "", status: "planejada"
-  });
+  const [formTalhao, setFormTalhao] = useState({ nome: "", area_ha: "", solo: "", latitude: "", longitude: "" });
+  const [formSafra, setFormSafra]   = useState({ talhao_id: "", cultura: "", ciclo: "Safra (verão)", produtividade_sc_ha: "", preco_saca: "", status: "planejada" });
+  const [formInsumo, setFormInsumo] = useState({ descricao: "", quantidade: "", unidade: "L", custo_total: "", data_aplicacao: "" });
+
+  const [salvando, setSalvando] = useState(false);
+  const [erro, setErro]         = useState("");
 
   const carregar = () => {
     setLoading(true);
@@ -41,36 +32,25 @@ export default function Dashboard() {
 
   useEffect(() => { carregar(); }, []);
 
-  const abrirInsumos = (safra) => {
+  const abrirInsumos = async (safra) => {
     setSafraAtiva(safra);
-    setLoadInsumos(true);
-    getInsumos(safra.id).then(setInsumos).finally(() => setLoadInsumos(false));
-  };
-
-  const salvarInsumo = async () => {
-    if (!formInsumo.descricao || !formInsumo.custo_total) return;
-    setSalvandoInsumo(true);
-    try {
-      await criarInsumo({
-        safra_id: safraAtiva.id,
-        descricao: formInsumo.descricao,
-        quantidade: formInsumo.quantidade ? parseFloat(formInsumo.quantidade) : null,
-        unidade: formInsumo.unidade,
-        custo_total: parseFloat(formInsumo.custo_total),
-        data_aplicacao: formInsumo.data_aplicacao || null,
-      });
-      setFormInsumo({ descricao: "", quantidade: "", unidade: "kg", custo_total: "", data_aplicacao: "" });
-      getInsumos(safraAtiva.id).then(setInsumos);
-      getDashboard().then(setDash);
-    } finally { setSalvandoInsumo(false); }
+    setLoadingInsumos(true);
+    const data = await getInsumos(safra.id);
+    setInsumos(data);
+    setLoadingInsumos(false);
   };
 
   const salvarTalhao = async () => {
     if (!formTalhao.nome || !formTalhao.area_ha) { setErro("Preencha nome e área."); return; }
     setSalvando(true); setErro("");
     try {
-      await criarTalhao({ ...formTalhao, area_ha: parseFloat(formTalhao.area_ha) });
-      setFormTalhao({ nome: "", area_ha: "", solo: "" });
+      await criarTalhao({
+        ...formTalhao,
+        area_ha: parseFloat(formTalhao.area_ha),
+        latitude: formTalhao.latitude ? parseFloat(formTalhao.latitude) : null,
+        longitude: formTalhao.longitude ? parseFloat(formTalhao.longitude) : null,
+      });
+      setFormTalhao({ nome: "", area_ha: "", solo: "", latitude: "", longitude: "" });
       setModal(null); carregar();
     } catch { setErro("Erro ao salvar."); }
     finally { setSalvando(false); }
@@ -92,163 +72,159 @@ export default function Dashboard() {
     finally { setSalvando(false); }
   };
 
-  const fmt          = (v) => Number(v).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
-  const totalInsumos = insumos.reduce((s, i) => s + i.custo_total, 0);
+  const salvarInsumo = async () => {
+    if (!formInsumo.descricao || !formInsumo.custo_total) { setErro("Preencha descrição e custo."); return; }
+    setSalvando(true); setErro("");
+    try {
+      await criarInsumo({
+        ...formInsumo,
+        safra_id: safraAtiva.id,
+        quantidade: formInsumo.quantidade ? parseFloat(formInsumo.quantidade) : null,
+        custo_total: parseFloat(formInsumo.custo_total),
+      });
+      setFormInsumo({ descricao: "", quantidade: "", unidade: "L", custo_total: "", data_aplicacao: "" });
+      setModal(null);
+      const novosInsumos = await getInsumos(safraAtiva.id);
+      setInsumos(novosInsumos);
+      carregar();
+    } catch { setErro("Erro ao salvar."); }
+    finally { setSalvando(false); }
+  };
+
+  const fmt = (v) => Number(v).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+  const totalInsumosSafra = insumos.reduce((s, i) => s + i.custo_total, 0);
 
   if (loading) return <div className="loading">Carregando...</div>;
 
   return (
     <div className="dashboard">
 
+      {/* ── Header ── */}
       <header className="dash-header">
         <div>
-          <h1>🌾 Safra Terra</h1>
-          <p>Gestão de safras e talhões</p>
+          <h1>🌾 SafraTerra</h1>
+          <p>Olá, {nomeUsuario}! Gestão de safras e talhões.</p>
         </div>
         <div className="header-actions">
           <button className="btn btn-secondary" onClick={() => { setErro(""); setModal("safra"); }}>+ Nova Safra</button>
           <button className="btn btn-primary"   onClick={() => { setErro(""); setModal("talhao"); }}>+ Novo Talhão</button>
+          <button className="btn btn-danger btn-sm" onClick={onLogout}>Sair</button>
         </div>
       </header>
 
-      <section className="cards-grid">
-        <Card label="Talhões cadastrados" value={dash.total_talhoes}         color="green" />
-        <Card label="Área total"          value={`${dash.total_area_ha} ha`} color="earth" />
-        <Card label="Safras registradas"  value={dash.total_safras}          color="gold"  />
-        <Card label="Custo com insumos"   value={fmt(dash.custo_insumos)}    color="red"   />
-        <Card label="Receita estimada"    value={fmt(dash.receita_estimada)} color="green" />
-        <Card label="Lucro estimado"      value={fmt(dash.lucro_estimado)}   color={dash.lucro_estimado >= 0 ? "green" : "red"} />
-      </section>
+      {/* ── Abas ── */}
+      <div className="abas">
+        <button className={`aba ${abaAtiva === "dashboard" ? "aba-ativa" : ""}`} onClick={() => setAbaAtiva("dashboard")}>
+          📊 Dashboard
+        </button>
+        <button className={`aba ${abaAtiva === "clima" ? "aba-ativa" : ""}`} onClick={() => setAbaAtiva("clima")}>
+          🌤️ Clima Agrícola
+        </button>
+      </div>
 
-      <div className={`main-layout ${safraAtiva ? "com-painel" : ""}`}>
-        <div className="tabelas">
+      {/* ── Aba Dashboard ── */}
+      {abaAtiva === "dashboard" && (
+        <>
+          <section className="cards-grid">
+            <Card label="Talhões cadastrados" value={dash.total_talhoes} color="green" />
+            <Card label="Área total"          value={`${dash.total_area_ha} ha`} color="earth" />
+            <Card label="Safras registradas"  value={dash.total_safras} color="gold" />
+            <Card label="Custo com insumos"   value={fmt(dash.custo_insumos)} color="red" />
+            <Card label="Receita estimada"    value={fmt(dash.receita_estimada)} color="green" />
+            <Card label="Lucro estimado"      value={fmt(dash.lucro_estimado)} color={dash.lucro_estimado >= 0 ? "green" : "red"} />
+          </section>
+
+          <div className="main-grid">
+            <section className="section">
+              <h2>Safras <span className="hint">— clique para ver insumos</span></h2>
+              <table>
+                <thead>
+                  <tr><th>Cultura</th><th>Talhão</th><th>Status</th><th>Produt.</th><th>Preço/sc</th></tr>
+                </thead>
+                <tbody>
+                  {safras.length === 0 && <tr><td colSpan={5} className="empty">Nenhuma safra cadastrada</td></tr>}
+                  {safras.map((s) => (
+                    <tr key={s.id} className={`clickable ${safraAtiva?.id === s.id ? "row-ativa" : ""}`} onClick={() => abrirInsumos(s)}>
+                      <td>{s.cultura}</td>
+                      <td>{s.talhao_nome}</td>
+                      <td><span className={`badge badge-${s.status.replace(" ","-")}`}>{s.status}</span></td>
+                      <td>{s.produtividade_sc_ha ? `${s.produtividade_sc_ha} sc/ha` : "—"}</td>
+                      <td>{s.preco_saca ? fmt(s.preco_saca) : "—"}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </section>
+
+            {safraAtiva && (
+              <section className="section insumos-painel">
+                <div className="insumos-header">
+                  <div>
+                    <h2>Insumos — {safraAtiva.cultura}</h2>
+                    <p className="insumos-sub">{safraAtiva.talhao_nome} · {safraAtiva.ciclo}</p>
+                  </div>
+                  <button className="btn btn-primary btn-sm" onClick={() => { setErro(""); setModal("insumo"); }}>+ Adicionar</button>
+                </div>
+                {loadingInsumos ? <p className="empty">Carregando...</p> : (
+                  <>
+                    <table>
+                      <thead><tr><th>Descrição</th><th>Qtd</th><th>Data</th><th>Custo</th></tr></thead>
+                      <tbody>
+                        {insumos.length === 0 && <tr><td colSpan={4} className="empty">Nenhum insumo registrado</td></tr>}
+                        {insumos.map((i) => (
+                          <tr key={i.id}>
+                            <td>{i.descricao}</td>
+                            <td>{i.quantidade ? `${i.quantidade} ${i.unidade}` : "—"}</td>
+                            <td>{i.data_aplicacao || "—"}</td>
+                            <td className="custo-val">{fmt(i.custo_total)}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                    {insumos.length > 0 && (
+                      <div className="insumos-total">
+                        <span>Total de insumos</span>
+                        <span className="custo-val">{fmt(totalInsumosSafra)}</span>
+                      </div>
+                    )}
+                  </>
+                )}
+              </section>
+            )}
+          </div>
 
           <section className="section">
             <h2>Talhões</h2>
             <table>
-              <thead><tr><th>Nome</th><th>Área (ha)</th><th>Solo</th></tr></thead>
+              <thead><tr><th>Nome</th><th>Área (ha)</th><th>Solo</th><th>Coordenadas</th></tr></thead>
               <tbody>
-                {talhoes.length === 0 && <tr><td colSpan={3} className="empty">Nenhum talhão cadastrado</td></tr>}
-                {talhoes.map(t => (
-                  <tr key={t.id}><td>{t.nome}</td><td>{t.area_ha}</td><td>{t.solo || "—"}</td></tr>
-                ))}
-              </tbody>
-            </table>
-          </section>
-
-          <section className="section">
-            <h2>Safras <span className="hint">— clique para ver insumos</span></h2>
-            <table>
-              <thead>
-                <tr><th>Cultura</th><th>Talhão</th><th>Status</th><th>Produtividade</th><th>Preço/sc</th></tr>
-              </thead>
-              <tbody>
-                {safras.length === 0 && <tr><td colSpan={5} className="empty">Nenhuma safra cadastrada</td></tr>}
-                {safras.map(s => (
-                  <tr key={s.id}
-                    className={`row-clicavel ${safraAtiva?.id === s.id ? "row-ativa" : ""}`}
-                    onClick={() => abrirInsumos(s)}>
-                    <td>{s.cultura}</td>
-                    <td>{s.talhao_nome}</td>
-                    <td><span className={`badge badge-${s.status.replace(" ", "-")}`}>{s.status}</span></td>
-                    <td>{s.produtividade_sc_ha ? `${s.produtividade_sc_ha} sc/ha` : "—"}</td>
-                    <td>{s.preco_saca ? fmt(s.preco_saca) : "—"}</td>
+                {talhoes.length === 0 && <tr><td colSpan={4} className="empty">Nenhum talhão cadastrado</td></tr>}
+                {talhoes.map((t) => (
+                  <tr key={t.id}>
+                    <td>{t.nome}</td><td>{t.area_ha}</td><td>{t.solo || "—"}</td>
+                    <td>{t.latitude ? `${t.latitude}, ${t.longitude}` : "—"}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </section>
-        </div>
+        </>
+      )}
 
-        {/* Painel lateral de insumos */}
-        {safraAtiva && (
-          <aside className="painel-insumos">
-            <div className="painel-header">
-              <div>
-                <h3>Insumos</h3>
-                <p className="painel-sub">{safraAtiva.cultura} · {safraAtiva.talhao_nome}</p>
-              </div>
-              <button className="modal-close" onClick={() => setSafraAtiva(null)}>×</button>
-            </div>
+      {/* ── Aba Clima ── */}
+      {abaAtiva === "clima" && <Clima talhoes={talhoes} />}
 
-            <div className="insumo-form">
-              <div className="campo">
-                <label>Descrição *</label>
-                <input type="text" placeholder="Ex: Herbicida Roundup"
-                  value={formInsumo.descricao}
-                  onChange={e => setFormInsumo({ ...formInsumo, descricao: e.target.value })} />
-              </div>
-              <div className="insumo-row">
-                <div className="campo">
-                  <label>Qtd</label>
-                  <input type="number" placeholder="0" min="0"
-                    value={formInsumo.quantidade}
-                    onChange={e => setFormInsumo({ ...formInsumo, quantidade: e.target.value })} />
-                </div>
-                <div className="campo">
-                  <label>Unidade</label>
-                  <select value={formInsumo.unidade}
-                    onChange={e => setFormInsumo({ ...formInsumo, unidade: e.target.value })}>
-                    {["kg","L","sc","t","un"].map(u => <option key={u}>{u}</option>)}
-                  </select>
-                </div>
-              </div>
-              <div className="campo">
-                <label>Custo total (R$) *</label>
-                <input type="number" placeholder="0,00" min="0" step="0.01"
-                  value={formInsumo.custo_total}
-                  onChange={e => setFormInsumo({ ...formInsumo, custo_total: e.target.value })} />
-              </div>
-              <div className="campo">
-                <label>Data de aplicação</label>
-                <input type="date" value={formInsumo.data_aplicacao}
-                  onChange={e => setFormInsumo({ ...formInsumo, data_aplicacao: e.target.value })} />
-              </div>
-              <button className="btn btn-primary" style={{width:"100%", marginTop:"4px"}}
-                onClick={salvarInsumo} disabled={salvandoInsumo}>
-                {salvandoInsumo ? "Salvando..." : "+ Adicionar Insumo"}
-              </button>
-            </div>
-
-            <div className="insumo-lista">
-              {loadInsumos && <p className="empty">Carregando...</p>}
-              {!loadInsumos && insumos.length === 0 && <p className="empty">Nenhum insumo ainda.</p>}
-              {insumos.map(i => (
-                <div className="insumo-item" key={i.id}>
-                  <div className="insumo-info">
-                    <span className="insumo-nome">{i.descricao}</span>
-                    {i.quantidade && <span className="insumo-detalhe">{i.quantidade} {i.unidade}</span>}
-                    {i.data_aplicacao && <span className="insumo-detalhe">📅 {i.data_aplicacao}</span>}
-                  </div>
-                  <span className="insumo-custo">{fmt(i.custo_total)}</span>
-                </div>
-              ))}
-            </div>
-
-            {insumos.length > 0 && (
-              <div className="insumo-total">
-                <span>Total de insumos</span>
-                <span>{fmt(totalInsumos)}</span>
-              </div>
-            )}
-          </aside>
-        )}
-      </div>
-
+      {/* ── Modais ── */}
       {modal === "talhao" && (
         <Modal titulo="Novo Talhão" onClose={() => setModal(null)} onSalvar={salvarTalhao} salvando={salvando} erro={erro}>
-          <Campo label="Nome do talhão *">
-            <input type="text" placeholder="Ex: Talhão A" value={formTalhao.nome}
-              onChange={e => setFormTalhao({ ...formTalhao, nome: e.target.value })} />
-          </Campo>
-          <Campo label="Área (hectares) *">
-            <input type="number" placeholder="Ex: 50" min="0" step="0.1" value={formTalhao.area_ha}
-              onChange={e => setFormTalhao({ ...formTalhao, area_ha: e.target.value })} />
-          </Campo>
-          <Campo label="Tipo de solo">
-            <input type="text" placeholder="Ex: Latossolo Vermelho" value={formTalhao.solo}
-              onChange={e => setFormTalhao({ ...formTalhao, solo: e.target.value })} />
-          </Campo>
+          <Campo label="Nome *"><input type="text" placeholder="Ex: Talhão A" value={formTalhao.nome} onChange={e => setFormTalhao({ ...formTalhao, nome: e.target.value })} /></Campo>
+          <Campo label="Área (ha) *"><input type="number" placeholder="50" min="0" step="0.1" value={formTalhao.area_ha} onChange={e => setFormTalhao({ ...formTalhao, area_ha: e.target.value })} /></Campo>
+          <Campo label="Solo"><input type="text" placeholder="Ex: Latossolo Vermelho" value={formTalhao.solo} onChange={e => setFormTalhao({ ...formTalhao, solo: e.target.value })} /></Campo>
+          <div className="g2">
+            <Campo label="Latitude (opcional)"><input type="number" placeholder="-15.7801" step="0.0001" value={formTalhao.latitude} onChange={e => setFormTalhao({ ...formTalhao, latitude: e.target.value })} /></Campo>
+            <Campo label="Longitude (opcional)"><input type="number" placeholder="-47.9292" step="0.0001" value={formTalhao.longitude} onChange={e => setFormTalhao({ ...formTalhao, longitude: e.target.value })} /></Campo>
+          </div>
+          <p style={{fontSize:'.75rem',color:'#3d6e4a'}}>💡 Coordenadas permitem clima automático do talhão. Use Google Maps para encontrar.</p>
         </Modal>
       )}
 
@@ -256,7 +232,7 @@ export default function Dashboard() {
         <Modal titulo="Nova Safra" onClose={() => setModal(null)} onSalvar={salvarSafra} salvando={salvando} erro={erro}>
           <Campo label="Talhão *">
             <select value={formSafra.talhao_id} onChange={e => setFormSafra({ ...formSafra, talhao_id: e.target.value })}>
-              <option value="">Selecione o talhão...</option>
+              <option value="">Selecione...</option>
               {talhoes.map(t => <option key={t.id} value={t.id}>{t.nome} ({t.area_ha} ha)</option>)}
             </select>
           </Campo>
@@ -271,14 +247,10 @@ export default function Dashboard() {
               <option>Safra (verão)</option><option>Safrinha (inverno)</option><option>Anual</option>
             </select>
           </Campo>
-          <Campo label="Produtividade esperada (sc/ha)">
-            <input type="number" placeholder="Ex: 60" min="0" value={formSafra.produtividade_sc_ha}
-              onChange={e => setFormSafra({ ...formSafra, produtividade_sc_ha: e.target.value })} />
-          </Campo>
-          <Campo label="Preço por saca (R$)">
-            <input type="number" placeholder="Ex: 130.00" min="0" step="0.01" value={formSafra.preco_saca}
-              onChange={e => setFormSafra({ ...formSafra, preco_saca: e.target.value })} />
-          </Campo>
+          <div className="g2">
+            <Campo label="Produtividade (sc/ha)"><input type="number" placeholder="60" min="0" value={formSafra.produtividade_sc_ha} onChange={e => setFormSafra({ ...formSafra, produtividade_sc_ha: e.target.value })} /></Campo>
+            <Campo label="Preço/saca (R$)"><input type="number" placeholder="130" min="0" step="0.01" value={formSafra.preco_saca} onChange={e => setFormSafra({ ...formSafra, preco_saca: e.target.value })} /></Campo>
+          </div>
           <Campo label="Status">
             <select value={formSafra.status} onChange={e => setFormSafra({ ...formSafra, status: e.target.value })}>
               <option value="planejada">Planejada</option>
@@ -286,6 +258,22 @@ export default function Dashboard() {
               <option value="concluida">Concluída</option>
             </select>
           </Campo>
+        </Modal>
+      )}
+
+      {modal === "insumo" && (
+        <Modal titulo={`Insumo — ${safraAtiva.cultura}`} onClose={() => setModal(null)} onSalvar={salvarInsumo} salvando={salvando} erro={erro}>
+          <Campo label="Descrição *"><input type="text" placeholder="Ex: Glifosato, Ureia..." value={formInsumo.descricao} onChange={e => setFormInsumo({ ...formInsumo, descricao: e.target.value })} /></Campo>
+          <div className="g2">
+            <Campo label="Quantidade"><input type="number" placeholder="10" min="0" value={formInsumo.quantidade} onChange={e => setFormInsumo({ ...formInsumo, quantidade: e.target.value })} /></Campo>
+            <Campo label="Unidade">
+              <select value={formInsumo.unidade} onChange={e => setFormInsumo({ ...formInsumo, unidade: e.target.value })}>
+                <option>L</option><option>kg</option><option>sc</option><option>t</option><option>un</option>
+              </select>
+            </Campo>
+          </div>
+          <Campo label="Custo total (R$) *"><input type="number" placeholder="5000.00" min="0" step="0.01" value={formInsumo.custo_total} onChange={e => setFormInsumo({ ...formInsumo, custo_total: e.target.value })} /></Campo>
+          <Campo label="Data de aplicação"><input type="date" value={formInsumo.data_aplicacao} onChange={e => setFormInsumo({ ...formInsumo, data_aplicacao: e.target.value })} /></Campo>
         </Modal>
       )}
     </div>
@@ -309,15 +297,10 @@ function Modal({ titulo, onClose, onSalvar, salvando, erro, children }) {
           <h3>{titulo}</h3>
           <button className="modal-close" onClick={onClose}>×</button>
         </div>
-        <div className="modal-body">
-          {children}
-          {erro && <div className="erro">{erro}</div>}
-        </div>
+        <div className="modal-body">{children}{erro && <div className="erro">{erro}</div>}</div>
         <div className="modal-footer">
           <button className="btn btn-ghost" onClick={onClose}>Cancelar</button>
-          <button className="btn btn-primary" onClick={onSalvar} disabled={salvando}>
-            {salvando ? "Salvando..." : "Salvar"}
-          </button>
+          <button className="btn btn-primary" onClick={onSalvar} disabled={salvando}>{salvando ? "Salvando..." : "Salvar"}</button>
         </div>
       </div>
     </div>
@@ -325,10 +308,5 @@ function Modal({ titulo, onClose, onSalvar, salvando, erro, children }) {
 }
 
 function Campo({ label, children }) {
-  return (
-    <div className="campo">
-      <label>{label}</label>
-      {children}
-    </div>
-  );
+  return <div className="campo"><label>{label}</label>{children}</div>;
 }

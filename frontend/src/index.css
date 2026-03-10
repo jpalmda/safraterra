@@ -7,119 +7,114 @@ body {
 }
 
 /* ── Login ── */
-.login-page {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: radial-gradient(ellipse at 30% 50%, rgba(61,110,74,.2) 0%, transparent 60%),
-              radial-gradient(ellipse at 80% 20%, rgba(212,168,67,.1) 0%, transparent 50%),
-              #0a120a;
-}
-
-.login-box {
-  background: #152515;
-  border: 1px solid #2a4a2a;
-  border-radius: 20px;
-  padding: 48px 40px;
-  width: 100%;
-  max-width: 400px;
-  text-align: center;
-  animation: slideUp .4s ease;
-}
-
-.login-logo { font-size: 3rem; margin-bottom: 12px; }
-.login-title { font-size: 2rem; color: #7BBD8E; font-weight: 700; }
-.login-sub { color: #3d6e4a; font-size: .9rem; margin-top: 6px; margin-bottom: 32px; }
-
-.login-tabs {
-  display: flex;
-  background: #0f1a0f;
-  border-radius: 10px;
-  padding: 4px;
-  margin-bottom: 28px;
-}
-.tab {
-  flex: 1; padding: 9px; border: none; border-radius: 8px;
-  cursor: pointer; font-size: .9rem; font-weight: 600;
-  background: transparent; color: #3d6e4a;
-  transition: background .2s, color .2s;
-}
-.tab.active { background: #3d6e4a; color: #e8f0e8; }
-
-.login-form { display: flex; flex-direction: column; gap: 16px; text-align: left; }
-.btn-full { width: 100%; margin-top: 4px; }
+.login-page { min-height:100vh; display:flex; align-items:center; justify-content:center; background:radial-gradient(ellipse at 30% 50%, rgba(61,110,74,.2) 0%, transparent 60%), radial-gradient(ellipse at 80% 20%, rgba(212,168,67,.1) 0%, transparent 50%), #0a120a; }
+.login-box { background:#152515; border:1px solid #2a4a2a; border-radius:20px; padding:48px 40px; width:100%; max-width:400px; text-align:center; animation:slideUp .4s ease; }
+.login-logo { font-size:3rem; margin-bottom:12px; }
+.login-title { font-size:2rem; color:#7BBD8E; font-weight:700; }
+.login-sub { color:#3d6e4a; font-size:.9rem; margin-top:6px; margin-bottom:32px; }
+.login-tabs { display:flex; background:#0f1a0f; border-radius:10px; padding:4px; margin-bottom:28px; }
+.tab { flex:1; padding:9px; border:none; border-radius:8px; cursor:pointer; font-size:.9rem; font-weight:600; background:transparent; color:#3d6e4a; transition:background .2s,color .2s; }
+.tab.active { background:#3d6e4a; color:#e8f0e8; }
+.login-form { display:flex; flex-direction:column; gap:16px; text-align:left; }
+.btn-full { width:100%; margin-top:4px; }
 
 /* ── Dashboard ── */
-.dashboard { padding: 32px; max-width: 1400px; margin: 0 auto; }
-
-.dash-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:32px; }
+.dashboard { padding:32px; max-width:1400px; margin:0 auto; }
+.dash-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; }
 .dash-header h1 { font-size:1.8rem; color:#7BBD8E; }
 .dash-header p  { color:#555; margin-top:4px; }
-.header-actions { display:flex; gap:12px; align-items:center; }
+.header-actions { display:flex; gap:10px; align-items:center; }
 
-.usuario-info { font-size:.85rem; color:#3d6e4a; margin-right:8px; }
+/* ── Abas ── */
+.abas { display:flex; gap:4px; margin-bottom:28px; border-bottom:1px solid #1e3a1e; padding-bottom:0; }
+.aba { padding:10px 20px; background:transparent; border:none; border-bottom:2px solid transparent; color:#3d6e4a; font-size:.9rem; font-weight:600; cursor:pointer; transition:color .2s, border-color .2s; margin-bottom:-1px; }
+.aba:hover { color:#7BBD8E; }
+.aba-ativa { color:#7BBD8E; border-bottom-color:#7BBD8E; }
 
 /* ── Botões ── */
 .btn { padding:10px 20px; border-radius:8px; border:none; cursor:pointer; font-size:.9rem; font-weight:600; transition:opacity .2s,transform .1s; }
-.btn:hover   { opacity:.85; }
-.btn:active  { transform:scale(.97); }
-.btn:disabled{ opacity:.5; cursor:not-allowed; }
-.btn-primary  { background:#3d6e4a; color:#e8f0e8; }
-.btn-secondary{ background:#1a3a2a; color:#7BBD8E; border:1px solid #3d6e4a; }
-.btn-ghost    { background:transparent; color:#666; }
-.btn-danger   { background:rgba(224,85,85,.15); color:#e05555; border:1px solid rgba(224,85,85,.2); }
-.btn-sm       { padding:7px 14px; font-size:.82rem; }
+.btn:hover { opacity:.85; } .btn:active { transform:scale(.97); } .btn:disabled { opacity:.5; cursor:not-allowed; }
+.btn-primary   { background:#3d6e4a; color:#e8f0e8; }
+.btn-secondary { background:#1a3a2a; color:#7BBD8E; border:1px solid #3d6e4a; }
+.btn-ghost     { background:transparent; color:#666; }
+.btn-danger    { background:rgba(224,85,85,.15); color:#e05555; border:1px solid rgba(224,85,85,.2); }
+.btn-sm        { padding:7px 14px; font-size:.82rem; }
 
 /* ── Cards ── */
-.cards-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:32px; }
+.cards-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:28px; }
 .card { background:#1a2e1a; border-radius:10px; padding:20px; border-left:4px solid #3d6e4a; }
-.card-green { border-left-color:#4fc47a; }
-.card-gold  { border-left-color:#D4A843; }
-.card-red   { border-left-color:#e05555; }
-.card-earth { border-left-color:#C8A96E; }
+.card-green { border-left-color:#4fc47a; } .card-gold { border-left-color:#D4A843; }
+.card-red   { border-left-color:#e05555; } .card-earth { border-left-color:#C8A96E; }
 .card-label { display:block; font-size:.72rem; color:#555; margin-bottom:8px; text-transform:uppercase; letter-spacing:1px; }
 .card-value { display:block; font-size:1.5rem; font-weight:700; color:#e8f0e8; }
 
-/* ── Grid safras + insumos ── */
+/* ── Tabelas ── */
 .main-grid { display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-bottom:8px; }
 @media(max-width:900px){ .main-grid{ grid-template-columns:1fr; } }
-
 .section { margin-bottom:28px; }
 .section h2 { color:#7BBD8E; margin-bottom:14px; font-size:1.05rem; letter-spacing:.5px; }
 .hint { font-size:.75rem; color:#3d6e4a; font-weight:400; font-style:italic; }
-
 table { width:100%; border-collapse:collapse; }
 th { text-align:left; padding:9px 12px; background:#1a2e1a; color:#7BBD8E; font-size:.72rem; letter-spacing:1px; text-transform:uppercase; }
 td { padding:11px 12px; border-bottom:1px solid #162416; font-size:.88rem; }
-.clickable { cursor:pointer; }
-.clickable:hover td { background:#1a2e1a; }
+.clickable { cursor:pointer; } .clickable:hover td { background:#1a2e1a; }
 .row-ativa td { background:#1e3a1e !important; border-left:3px solid #7BBD8E; }
-
 .badge { padding:3px 10px; border-radius:99px; font-size:.72rem; font-weight:600; }
-.badge-planejada    { background:#1a3a5c; color:#5b9bd5; }
+.badge-planejada { background:#1a3a5c; color:#5b9bd5; }
 .badge-em-andamento { background:#2d4a1e; color:#7BBD8E; }
-.badge-concluida    { background:#1a3a1a; color:#4fc47a; }
-
-.empty   { color:#333; font-style:italic; text-align:center; padding:24px; }
+.badge-concluida { background:#1a3a1a; color:#4fc47a; }
+.empty { color:#333; font-style:italic; text-align:center; padding:24px; }
 .loading { color:#555; padding:40px; text-align:center; font-size:1.1rem; min-height:100vh; display:flex; align-items:center; justify-content:center; }
 
 /* ── Insumos ── */
 .insumos-painel { background:#111e11; border:1px solid #1e3a1e; border-radius:12px; padding:20px; }
 .insumos-header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:16px; }
-.insumos-header h2 { margin-bottom:4px; }
 .insumos-sub { font-size:.78rem; color:#3d6e4a; }
 .custo-val { color:#D4A843; font-weight:600; font-family:monospace; }
 .insumos-total { display:flex; justify-content:space-between; padding:12px 14px; margin-top:8px; background:#1a2e1a; border-radius:8px; font-size:.9rem; font-weight:600; }
 
+/* ── Clima ── */
+.clima-painel { background:#111e11; border:1px solid #1e3a1e; border-radius:14px; padding:28px; }
+.clima-header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:24px; flex-wrap:wrap; gap:16px; }
+.clima-header h2 { color:#7BBD8E; font-size:1.1rem; }
+.clima-local { font-size:.82rem; color:#3d6e4a; margin-top:4px; }
+.clima-busca { display:flex; gap:8px; }
+.clima-busca input { background:#0f1a0f; border:1px solid #2a4a2a; border-radius:8px; padding:8px 12px; color:#e8f0e8; font-size:.88rem; outline:none; width:200px; }
+.clima-busca input:focus { border-color:#7BBD8E; }
+
+.clima-loading { text-align:center; padding:40px; color:#3d6e4a; font-size:1rem; }
+.spin { display:inline-block; animation:girar 1s linear infinite; }
+
+.clima-atual { text-align:center; padding:24px 0; border-bottom:1px solid #1e3a1e; margin-bottom:20px; }
+.clima-icon { font-size:4rem; margin-bottom:8px; }
+.clima-temp { font-size:3.5rem; font-weight:900; color:#e8f0e8; line-height:1; }
+.clima-cond { color:#7BBD8E; font-size:1rem; margin:8px 0 16px; }
+.clima-detalhes { display:flex; justify-content:center; gap:24px; flex-wrap:wrap; }
+.clima-detalhes span { font-size:.85rem; color:#555; background:#1a2e1a; padding:6px 14px; border-radius:99px; }
+
+.clima-previsao { display:grid; grid-template-columns:repeat(5,1fr); gap:10px; margin-bottom:20px; }
+.clima-dia { background:#1a2e1a; border-radius:10px; padding:14px 8px; text-align:center; display:flex; flex-direction:column; gap:5px; align-items:center; }
+.clima-dia-nome { font-size:.72rem; color:#3d6e4a; font-weight:600; text-transform:uppercase; letter-spacing:1px; }
+.clima-dia-icon { font-size:1.5rem; }
+.clima-dia-chuva { font-size:.72rem; color:#5b9bd5; }
+.clima-dia-max { font-size:.95rem; font-weight:700; color:#e8f0e8; }
+.clima-dia-min { font-size:.82rem; color:#555; }
+
+.clima-alerta { padding:12px 16px; border-radius:10px; font-size:.85rem; margin-top:8px; }
+.alerta-chuva { background:rgba(91,155,213,.1); border:1px solid rgba(91,155,213,.2); color:#5b9bd5; }
+.alerta-vento { background:rgba(200,169,110,.1); border:1px solid rgba(200,169,110,.2); color:#C8A96E; }
+.alerta-calor { background:rgba(224,85,85,.1); border:1px solid rgba(224,85,85,.2); color:#e05555; }
+
+.clima-vazio { text-align:center; padding:48px; color:#333; font-style:italic; }
+
 /* ── Modal ── */
 .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,.75); display:flex; align-items:center; justify-content:center; z-index:100; backdrop-filter:blur(4px); animation:fadeIn .15s ease; }
-.modal { background:#152515; border:1px solid #2a4a2a; border-radius:14px; width:100%; max-width:460px; animation:slideUp .2s ease; }
-.modal-header { display:flex; justify-content:space-between; align-items:center; padding:18px 22px; border-bottom:1px solid #1e3a1e; }
+.modal { background:#152515; border:1px solid #2a4a2a; border-radius:14px; width:100%; max-width:460px; animation:slideUp .2s ease; max-height:90vh; overflow-y:auto; }
+.modal-header { display:flex; justify-content:space-between; align-items:center; padding:18px 22px; border-bottom:1px solid #1e3a1e; position:sticky; top:0; background:#152515; }
 .modal-header h3 { color:#7BBD8E; font-size:1.05rem; }
 .modal-close { background:none; border:none; color:#444; font-size:1.5rem; cursor:pointer; transition:color .2s; line-height:1; }
 .modal-close:hover { color:#e8f0e8; }
-.modal-body   { padding:22px; display:flex; flex-direction:column; gap:14px; }
+.modal-body { padding:22px; display:flex; flex-direction:column; gap:14px; }
 .modal-footer { padding:14px 22px; border-top:1px solid #1e3a1e; display:flex; justify-content:flex-end; gap:10px; }
 
 /* ── Campos ── */
@@ -128,15 +123,16 @@ td { padding:11px 12px; border-bottom:1px solid #162416; font-size:.88rem; }
 .campo input, .campo select { background:#0f1a0f; border:1px solid #2a4a2a; border-radius:8px; padding:10px 13px; color:#e8f0e8; font-size:.9rem; outline:none; transition:border-color .2s; width:100%; }
 .campo input:focus, .campo select:focus { border-color:#7BBD8E; }
 .campo input::placeholder { color:#2a3a2a; }
-
 .g2 { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
 .erro { background:rgba(224,85,85,.1); border:1px solid rgba(224,85,85,.3); border-radius:8px; padding:10px 14px; color:#e05555; font-size:.85rem; }
 
 @keyframes fadeIn  { from{opacity:0} to{opacity:1} }
 @keyframes slideUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+@keyframes girar   { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
 
 @media(max-width:700px) {
   .dashboard { padding:16px; }
   .cards-grid { grid-template-columns:1fr 1fr; }
   .dash-header { flex-direction:column; align-items:flex-start; gap:14px; }
+  .clima-previsao { grid-template-columns:repeat(3,1fr); }
 }
