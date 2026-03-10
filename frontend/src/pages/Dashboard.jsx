@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
-import {
-  getDashboard, getTalhoes, getSafras,
-  criarTalhao, criarSafra, getInsumos, criarInsumo
-} from "../services/api";
+import { getDashboard, getTalhoes, getSafras, criarTalhao, criarSafra, getInsumos, criarInsumo } from "../services/api";
 import Clima from "../components/Clima";
+import Graficos from "../components/Graficos";
 
 export default function Dashboard({ nomeUsuario, onLogout }) {
   const [dash, setDash]       = useState(null);
@@ -14,12 +12,11 @@ export default function Dashboard({ nomeUsuario, onLogout }) {
   const [safraAtiva, setSafraAtiva]         = useState(null);
   const [insumos, setInsumos]               = useState([]);
   const [loadingInsumos, setLoadingInsumos] = useState(false);
-  const [abaAtiva, setAbaAtiva]             = useState("dashboard"); // 'dashboard' | 'clima'
+  const [abaAtiva, setAbaAtiva]             = useState("dashboard");
 
   const [formTalhao, setFormTalhao] = useState({ nome: "", area_ha: "", solo: "", latitude: "", longitude: "" });
   const [formSafra, setFormSafra]   = useState({ talhao_id: "", cultura: "", ciclo: "Safra (verão)", produtividade_sc_ha: "", preco_saca: "", status: "planejada" });
   const [formInsumo, setFormInsumo] = useState({ descricao: "", quantidade: "", unidade: "L", custo_total: "", data_aplicacao: "" });
-
   const [salvando, setSalvando] = useState(false);
   const [erro, setErro]         = useState("");
 
@@ -44,51 +41,33 @@ export default function Dashboard({ nomeUsuario, onLogout }) {
     if (!formTalhao.nome || !formTalhao.area_ha) { setErro("Preencha nome e área."); return; }
     setSalvando(true); setErro("");
     try {
-      await criarTalhao({
-        ...formTalhao,
-        area_ha: parseFloat(formTalhao.area_ha),
-        latitude: formTalhao.latitude ? parseFloat(formTalhao.latitude) : null,
-        longitude: formTalhao.longitude ? parseFloat(formTalhao.longitude) : null,
-      });
+      await criarTalhao({ ...formTalhao, area_ha: parseFloat(formTalhao.area_ha), latitude: formTalhao.latitude ? parseFloat(formTalhao.latitude) : null, longitude: formTalhao.longitude ? parseFloat(formTalhao.longitude) : null });
       setFormTalhao({ nome: "", area_ha: "", solo: "", latitude: "", longitude: "" });
       setModal(null); carregar();
-    } catch { setErro("Erro ao salvar."); }
-    finally { setSalvando(false); }
+    } catch { setErro("Erro ao salvar."); } finally { setSalvando(false); }
   };
 
   const salvarSafra = async () => {
     if (!formSafra.talhao_id || !formSafra.cultura) { setErro("Selecione talhão e cultura."); return; }
     setSalvando(true); setErro("");
     try {
-      await criarSafra({
-        ...formSafra,
-        talhao_id: parseInt(formSafra.talhao_id),
-        produtividade_sc_ha: formSafra.produtividade_sc_ha ? parseFloat(formSafra.produtividade_sc_ha) : null,
-        preco_saca: formSafra.preco_saca ? parseFloat(formSafra.preco_saca) : null,
-      });
+      await criarSafra({ ...formSafra, talhao_id: parseInt(formSafra.talhao_id), produtividade_sc_ha: formSafra.produtividade_sc_ha ? parseFloat(formSafra.produtividade_sc_ha) : null, preco_saca: formSafra.preco_saca ? parseFloat(formSafra.preco_saca) : null });
       setFormSafra({ talhao_id: "", cultura: "", ciclo: "Safra (verão)", produtividade_sc_ha: "", preco_saca: "", status: "planejada" });
       setModal(null); carregar();
-    } catch { setErro("Erro ao salvar."); }
-    finally { setSalvando(false); }
+    } catch { setErro("Erro ao salvar."); } finally { setSalvando(false); }
   };
 
   const salvarInsumo = async () => {
     if (!formInsumo.descricao || !formInsumo.custo_total) { setErro("Preencha descrição e custo."); return; }
     setSalvando(true); setErro("");
     try {
-      await criarInsumo({
-        ...formInsumo,
-        safra_id: safraAtiva.id,
-        quantidade: formInsumo.quantidade ? parseFloat(formInsumo.quantidade) : null,
-        custo_total: parseFloat(formInsumo.custo_total),
-      });
+      await criarInsumo({ ...formInsumo, safra_id: safraAtiva.id, quantidade: formInsumo.quantidade ? parseFloat(formInsumo.quantidade) : null, custo_total: parseFloat(formInsumo.custo_total) });
       setFormInsumo({ descricao: "", quantidade: "", unidade: "L", custo_total: "", data_aplicacao: "" });
       setModal(null);
       const novosInsumos = await getInsumos(safraAtiva.id);
       setInsumos(novosInsumos);
       carregar();
-    } catch { setErro("Erro ao salvar."); }
-    finally { setSalvando(false); }
+    } catch { setErro("Erro ao salvar."); } finally { setSalvando(false); }
   };
 
   const fmt = (v) => Number(v).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
@@ -98,8 +77,6 @@ export default function Dashboard({ nomeUsuario, onLogout }) {
 
   return (
     <div className="dashboard">
-
-      {/* ── Header ── */}
       <header className="dash-header">
         <div>
           <h1>🌾 SafraTerra</h1>
@@ -112,14 +89,10 @@ export default function Dashboard({ nomeUsuario, onLogout }) {
         </div>
       </header>
 
-      {/* ── Abas ── */}
       <div className="abas">
-        <button className={`aba ${abaAtiva === "dashboard" ? "aba-ativa" : ""}`} onClick={() => setAbaAtiva("dashboard")}>
-          📊 Dashboard
-        </button>
-        <button className={`aba ${abaAtiva === "clima" ? "aba-ativa" : ""}`} onClick={() => setAbaAtiva("clima")}>
-          🌤️ Clima Agrícola
-        </button>
+        <button className={`aba ${abaAtiva === "dashboard" ? "aba-ativa" : ""}`} onClick={() => setAbaAtiva("dashboard")}>📊 Dashboard</button>
+        <button className={`aba ${abaAtiva === "graficos"  ? "aba-ativa" : ""}`} onClick={() => setAbaAtiva("graficos")}>📈 Gráficos</button>
+        <button className={`aba ${abaAtiva === "clima"     ? "aba-ativa" : ""}`} onClick={() => setAbaAtiva("clima")}>🌤️ Clima</button>
       </div>
 
       {/* ── Aba Dashboard ── */}
@@ -138,15 +111,12 @@ export default function Dashboard({ nomeUsuario, onLogout }) {
             <section className="section">
               <h2>Safras <span className="hint">— clique para ver insumos</span></h2>
               <table>
-                <thead>
-                  <tr><th>Cultura</th><th>Talhão</th><th>Status</th><th>Produt.</th><th>Preço/sc</th></tr>
-                </thead>
+                <thead><tr><th>Cultura</th><th>Talhão</th><th>Status</th><th>Produt.</th><th>Preço/sc</th></tr></thead>
                 <tbody>
                   {safras.length === 0 && <tr><td colSpan={5} className="empty">Nenhuma safra cadastrada</td></tr>}
                   {safras.map((s) => (
                     <tr key={s.id} className={`clickable ${safraAtiva?.id === s.id ? "row-ativa" : ""}`} onClick={() => abrirInsumos(s)}>
-                      <td>{s.cultura}</td>
-                      <td>{s.talhao_nome}</td>
+                      <td>{s.cultura}</td><td>{s.talhao_nome}</td>
                       <td><span className={`badge badge-${s.status.replace(" ","-")}`}>{s.status}</span></td>
                       <td>{s.produtividade_sc_ha ? `${s.produtividade_sc_ha} sc/ha` : "—"}</td>
                       <td>{s.preco_saca ? fmt(s.preco_saca) : "—"}</td>
@@ -170,7 +140,7 @@ export default function Dashboard({ nomeUsuario, onLogout }) {
                     <table>
                       <thead><tr><th>Descrição</th><th>Qtd</th><th>Data</th><th>Custo</th></tr></thead>
                       <tbody>
-                        {insumos.length === 0 && <tr><td colSpan={4} className="empty">Nenhum insumo registrado</td></tr>}
+                        {insumos.length === 0 && <tr><td colSpan={4} className="empty">Nenhum insumo</td></tr>}
                         {insumos.map((i) => (
                           <tr key={i.id}>
                             <td>{i.descricao}</td>
@@ -211,8 +181,8 @@ export default function Dashboard({ nomeUsuario, onLogout }) {
         </>
       )}
 
-      {/* ── Aba Clima ── */}
-      {abaAtiva === "clima" && <Clima talhoes={talhoes} />}
+      {abaAtiva === "graficos" && <Graficos safras={safras} dash={dash} />}
+      {abaAtiva === "clima"    && <Clima talhoes={talhoes} />}
 
       {/* ── Modais ── */}
       {modal === "talhao" && (
@@ -221,10 +191,10 @@ export default function Dashboard({ nomeUsuario, onLogout }) {
           <Campo label="Área (ha) *"><input type="number" placeholder="50" min="0" step="0.1" value={formTalhao.area_ha} onChange={e => setFormTalhao({ ...formTalhao, area_ha: e.target.value })} /></Campo>
           <Campo label="Solo"><input type="text" placeholder="Ex: Latossolo Vermelho" value={formTalhao.solo} onChange={e => setFormTalhao({ ...formTalhao, solo: e.target.value })} /></Campo>
           <div className="g2">
-            <Campo label="Latitude (opcional)"><input type="number" placeholder="-15.7801" step="0.0001" value={formTalhao.latitude} onChange={e => setFormTalhao({ ...formTalhao, latitude: e.target.value })} /></Campo>
-            <Campo label="Longitude (opcional)"><input type="number" placeholder="-47.9292" step="0.0001" value={formTalhao.longitude} onChange={e => setFormTalhao({ ...formTalhao, longitude: e.target.value })} /></Campo>
+            <Campo label="Latitude"><input type="number" placeholder="-20.9374" step="0.0001" value={formTalhao.latitude} onChange={e => setFormTalhao({ ...formTalhao, latitude: e.target.value })} /></Campo>
+            <Campo label="Longitude"><input type="number" placeholder="-48.4773" step="0.0001" value={formTalhao.longitude} onChange={e => setFormTalhao({ ...formTalhao, longitude: e.target.value })} /></Campo>
           </div>
-          <p style={{fontSize:'.75rem',color:'#3d6e4a'}}>💡 Coordenadas permitem clima automático do talhão. Use Google Maps para encontrar.</p>
+          <p style={{fontSize:'.75rem',color:'#3d6e4a'}}>💡 Coordenadas permitem clima automático. Use Google Maps para encontrar.</p>
         </Modal>
       )}
 

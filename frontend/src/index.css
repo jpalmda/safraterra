@@ -1,10 +1,5 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
-
-body {
-  background: #0f1a0f;
-  color: #e8f0e8;
-  font-family: 'Segoe UI', sans-serif;
-}
+body { background: #0f1a0f; color: #e8f0e8; font-family: 'Segoe UI', sans-serif; }
 
 /* ── Login ── */
 .login-page { min-height:100vh; display:flex; align-items:center; justify-content:center; background:radial-gradient(ellipse at 30% 50%, rgba(61,110,74,.2) 0%, transparent 60%), radial-gradient(ellipse at 80% 20%, rgba(212,168,67,.1) 0%, transparent 50%), #0a120a; }
@@ -26,8 +21,8 @@ body {
 .header-actions { display:flex; gap:10px; align-items:center; }
 
 /* ── Abas ── */
-.abas { display:flex; gap:4px; margin-bottom:28px; border-bottom:1px solid #1e3a1e; padding-bottom:0; }
-.aba { padding:10px 20px; background:transparent; border:none; border-bottom:2px solid transparent; color:#3d6e4a; font-size:.9rem; font-weight:600; cursor:pointer; transition:color .2s, border-color .2s; margin-bottom:-1px; }
+.abas { display:flex; gap:4px; margin-bottom:28px; border-bottom:1px solid #1e3a1e; }
+.aba { padding:10px 20px; background:transparent; border:none; border-bottom:2px solid transparent; color:#3d6e4a; font-size:.9rem; font-weight:600; cursor:pointer; transition:color .2s,border-color .2s; margin-bottom:-1px; }
 .aba:hover { color:#7BBD8E; }
 .aba-ativa { color:#7BBD8E; border-bottom-color:#7BBD8E; }
 
@@ -44,7 +39,7 @@ body {
 .cards-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:28px; }
 .card { background:#1a2e1a; border-radius:10px; padding:20px; border-left:4px solid #3d6e4a; }
 .card-green { border-left-color:#4fc47a; } .card-gold { border-left-color:#D4A843; }
-.card-red   { border-left-color:#e05555; } .card-earth { border-left-color:#C8A96E; }
+.card-red { border-left-color:#e05555; } .card-earth { border-left-color:#C8A96E; }
 .card-label { display:block; font-size:.72rem; color:#555; margin-bottom:8px; text-transform:uppercase; letter-spacing:1px; }
 .card-value { display:block; font-size:1.5rem; font-weight:700; color:#e8f0e8; }
 
@@ -73,6 +68,24 @@ td { padding:11px 12px; border-bottom:1px solid #162416; font-size:.88rem; }
 .custo-val { color:#D4A843; font-weight:600; font-family:monospace; }
 .insumos-total { display:flex; justify-content:space-between; padding:12px 14px; margin-top:8px; background:#1a2e1a; border-radius:8px; font-size:.9rem; font-weight:600; }
 
+/* ── Gráficos ── */
+.graficos-painel { padding: 4px 0; }
+.graficos-painel h2 { color:#7BBD8E; margin-bottom:24px; font-size:1.1rem; }
+.grafico-bloco { background:#111e11; border:1px solid #1e3a1e; border-radius:12px; padding:24px; margin-bottom:20px; }
+.grafico-bloco h3 { color:#7BBD8E; font-size:.95rem; margin-bottom:16px; font-weight:600; }
+.graficos-resumo { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:20px; }
+.resumo-card { background:#111e11; border:1px solid #1e3a1e; border-radius:10px; padding:16px; text-align:center; }
+.resumo-label { display:block; font-size:.7rem; color:#555; text-transform:uppercase; letter-spacing:1px; margin-bottom:8px; }
+.resumo-val { display:block; font-size:1.2rem; font-weight:700; }
+.resumo-val.verde { color:#4fc47a; }
+.resumo-val.vermelho { color:#e05555; }
+.graficos-pizzas { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+.graficos-vazio { text-align:center; padding:60px; color:#333; font-style:italic; background:#111e11; border:1px solid #1e3a1e; border-radius:12px; }
+@media(max-width:700px) {
+  .graficos-resumo { grid-template-columns:1fr 1fr; }
+  .graficos-pizzas { grid-template-columns:1fr; }
+}
+
 /* ── Clima ── */
 .clima-painel { background:#111e11; border:1px solid #1e3a1e; border-radius:14px; padding:28px; }
 .clima-header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:24px; flex-wrap:wrap; gap:16px; }
@@ -81,17 +94,14 @@ td { padding:11px 12px; border-bottom:1px solid #162416; font-size:.88rem; }
 .clima-busca { display:flex; gap:8px; }
 .clima-busca input { background:#0f1a0f; border:1px solid #2a4a2a; border-radius:8px; padding:8px 12px; color:#e8f0e8; font-size:.88rem; outline:none; width:200px; }
 .clima-busca input:focus { border-color:#7BBD8E; }
-
-.clima-loading { text-align:center; padding:40px; color:#3d6e4a; font-size:1rem; }
+.clima-loading { text-align:center; padding:40px; color:#3d6e4a; }
 .spin { display:inline-block; animation:girar 1s linear infinite; }
-
 .clima-atual { text-align:center; padding:24px 0; border-bottom:1px solid #1e3a1e; margin-bottom:20px; }
 .clima-icon { font-size:4rem; margin-bottom:8px; }
 .clima-temp { font-size:3.5rem; font-weight:900; color:#e8f0e8; line-height:1; }
 .clima-cond { color:#7BBD8E; font-size:1rem; margin:8px 0 16px; }
 .clima-detalhes { display:flex; justify-content:center; gap:24px; flex-wrap:wrap; }
 .clima-detalhes span { font-size:.85rem; color:#555; background:#1a2e1a; padding:6px 14px; border-radius:99px; }
-
 .clima-previsao { display:grid; grid-template-columns:repeat(5,1fr); gap:10px; margin-bottom:20px; }
 .clima-dia { background:#1a2e1a; border-radius:10px; padding:14px 8px; text-align:center; display:flex; flex-direction:column; gap:5px; align-items:center; }
 .clima-dia-nome { font-size:.72rem; color:#3d6e4a; font-weight:600; text-transform:uppercase; letter-spacing:1px; }
@@ -99,25 +109,21 @@ td { padding:11px 12px; border-bottom:1px solid #162416; font-size:.88rem; }
 .clima-dia-chuva { font-size:.72rem; color:#5b9bd5; }
 .clima-dia-max { font-size:.95rem; font-weight:700; color:#e8f0e8; }
 .clima-dia-min { font-size:.82rem; color:#555; }
-
 .clima-alerta { padding:12px 16px; border-radius:10px; font-size:.85rem; margin-top:8px; }
 .alerta-chuva { background:rgba(91,155,213,.1); border:1px solid rgba(91,155,213,.2); color:#5b9bd5; }
 .alerta-vento { background:rgba(200,169,110,.1); border:1px solid rgba(200,169,110,.2); color:#C8A96E; }
 .alerta-calor { background:rgba(224,85,85,.1); border:1px solid rgba(224,85,85,.2); color:#e05555; }
-
 .clima-vazio { text-align:center; padding:48px; color:#333; font-style:italic; }
 
 /* ── Modal ── */
 .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,.75); display:flex; align-items:center; justify-content:center; z-index:100; backdrop-filter:blur(4px); animation:fadeIn .15s ease; }
 .modal { background:#152515; border:1px solid #2a4a2a; border-radius:14px; width:100%; max-width:460px; animation:slideUp .2s ease; max-height:90vh; overflow-y:auto; }
-.modal-header { display:flex; justify-content:space-between; align-items:center; padding:18px 22px; border-bottom:1px solid #1e3a1e; position:sticky; top:0; background:#152515; }
+.modal-header { display:flex; justify-content:space-between; align-items:center; padding:18px 22px; border-bottom:1px solid #1e3a1e; position:sticky; top:0; background:#152515; z-index:1; }
 .modal-header h3 { color:#7BBD8E; font-size:1.05rem; }
 .modal-close { background:none; border:none; color:#444; font-size:1.5rem; cursor:pointer; transition:color .2s; line-height:1; }
 .modal-close:hover { color:#e8f0e8; }
 .modal-body { padding:22px; display:flex; flex-direction:column; gap:14px; }
 .modal-footer { padding:14px 22px; border-top:1px solid #1e3a1e; display:flex; justify-content:flex-end; gap:10px; }
-
-/* ── Campos ── */
 .campo { display:flex; flex-direction:column; gap:6px; }
 .campo label { font-size:.7rem; color:#7BBD8E; letter-spacing:1px; text-transform:uppercase; }
 .campo input, .campo select { background:#0f1a0f; border:1px solid #2a4a2a; border-radius:8px; padding:10px 13px; color:#e8f0e8; font-size:.9rem; outline:none; transition:border-color .2s; width:100%; }
