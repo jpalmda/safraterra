@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { getDashboard, getTalhoes, getSafras, criarTalhao, criarSafra, getInsumos, criarInsumo } from "../services/api";
 import Clima from "../components/Clima";
 import Graficos from "../components/Graficos";
-import { gerarRelatorio } from "../utils/gerarPDF";
+import { gerarRelatorio } from "../utils/GerarPDF";
 
 const fmt = (v) => Number(v).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
